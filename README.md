@@ -6,7 +6,7 @@
 
 拉取标的日线+30分钟K线（腾讯财经），用 `index.html` 里的策略引擎在**已收盘**的K线上判断仓位翻转点，新信号通过 Server酱 推送到微信。状态文件 `monitor/state.json` 每次运行后提交回仓库实现跨运行去重。
 
-支持**策略组合**，合成方式与网页「策略组合」完全一致（调用同一个 `BT.combineSignals`）。当前配置：3 个策略 + 多数同意（过半看多）。
+支持**策略组合**，合成方式与网页「策略组合」完全一致（调用同一个 `BT.combineSignals`）。当前配置：3 个策略 + 全部同意（AND，最保守，三票全看多才持仓）。
 
 ## 配置监控标的 / 策略
 
@@ -22,7 +22,7 @@
     { "key": "bbi",  "params": { "n": 3, "mult": 2, "mode": 0 } },
     { "key": "macd", "params": { "fast": 5, "slow": 10, "signal": 9 } }
   ],
-  "comboMode": "majority",
+  "comboMode": "and",
   "periods": ["day", "m30"],
   "fq": 1
 }
