@@ -38,8 +38,11 @@
 
 ### 4. 手动触发一次测试
 
-仓库页 → Actions → 左侧 stock-signal-monitor → Run workflow → 运行。
-看运行日志：出现 `[done] {"ok":true,...}` 即成功。第一次运行只记基线不报警（正常）。同时微信「方糖」服务号应收到一条测试推文（若有新信号时）。
+仓库页 → Actions → 左侧 stock-signal-monitor → 右侧 **Run workflow** → 勾选
+「只发一条测试消息验证通道」→ Run workflow。
+
+- 勾选测试：会立刻给微信「方糖」服务号推一条 `【测试】信号监控推送通道正常`，**不改动信号状态**。这是验证通道最直接的办法。
+- 不勾选（默认）：正常巡检。日志出现 `[done] {"ok":true,...}` 即成功；**第一次运行只记基线不报警**（日志里 `"baseline":true,"pushed":false`），属正常。
 
 > 注意：新仓库如果以前没用过 Actions，先去 Actions 页点绿色按钮启用。
 
@@ -60,4 +63,8 @@ set DRY_RUN=1
 set SCT_SENDKEY=假密钥
 node monitor/cloud-monitor.mjs
 ```
-DRY_RUN 模式只打印推送内容不真发。
+DRY_RUN 模式只打印推送内容不真发。加 `set TEST_PUSH=1` 可强制发一条测试推送（不含信号状态）。
+
+> 踩坑：Windows 下用 curl / 批处理发中文时，默认按 GBK 编码，Server酱 会返回
+> `30001 database error ... Incorrect string value`。这是**本机 shell 编码问题**，不是密钥问题——
+> GitHub Actions 是纯 UTF-8，不会出现。本地要用 Node/Python 显式 UTF-8 编码发送。
