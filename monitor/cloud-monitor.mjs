@@ -3,6 +3,7 @@
  * 用法：node monitor/cloud-monitor.mjs
  *   环境变量 SCT_SENDKEY  Server酱密钥（GitHub Secrets 里配置）
  *   环境变量 DRY_RUN=1    只打印推送内容，不真正发送（本地测试用）
+ *   环境变量 TEST_PUSH=1  强制推一条测试消息验证通道，不改动信号状态
  * 状态去重：monitor/state.json（每次运行后提交回仓库，跨运行持久化）
  */
 import fs from 'node:fs';
@@ -16,6 +17,7 @@ const CONFIG_PATH = path.join(DIR, 'config.json');
 const STATE_PATH = path.join(DIR, 'state.json');
 const SENDKEY = process.env.SCT_SENDKEY || '';
 const DRY_RUN = process.env.DRY_RUN === '1';
+const TEST_PUSH = process.env.TEST_PUSH === '1';
 
 /* ---------- 引擎加载 ---------- */
 function loadEngine() {
@@ -180,6 +182,26 @@ async function main() {
     });
   }
 
+  /* 测试推送：只验证通道，不改动去重状态 */
+  if (TEST_PUSH) {
+    const lines = cfg.periods.map(p => {
+      const pos = positions[p];
+      const pTag = p === 'day' ? '日线' : '30分钟';
+      return '- ' + pTag + '：' + (pos.position === 'hold' ? '持有' : '空仓') +
+             '（最后K线 ' + pos.lastDate + '，收盘 ' + pos.close + '）';
+    });
+    await pushServerChan(
+      '【测试】信号监控推送通道正常',
+      '**' + name + '** (' + code + ')\n\n' + lines.join('\n') +
+      '\n\n- 策略：' + st.name +
+      '\n- 时间：' + bjNow().toISOString().replace('T', ' ').slice(0, 19) + ' 北京时间' +
+      '\n\n> 这是一条手动触发的测试消息，不代表买卖信号'
+    );
+    console.log('[done] 测试推送已发送');
+    return;
+  }
+
+  const wasBaseline = !state.baseline;
   let stateChanged = false;
   if (!state.baseline) { state.baseline = true; stateChanged = true; }
   else if (alerts.length) stateChanged = true;
@@ -191,7 +213,7 @@ async function main() {
     time: now.toISOString().replace('T', ' ').slice(0, 19) + ' 北京时间',
     symbol: code, name, strategy: st.name,
     positions, alertCount: alerts.length,
-    pushed: false, baseline: !state.baseline ? false : true
+    pushed: false, baseline: wasBaseline
   };
 
   /* 推送（逐条） */
