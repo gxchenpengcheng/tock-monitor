@@ -1,0 +1,38 @@
+name: stock-signal-monitor
+
+on:
+  schedule:
+    # GitHub Actions 用 UTC。此处覆盖 北京时间 9:30-11:45 与 13:00-15:45，交易日每15分钟
+    # （1-3,5-7 点 UTC = 9-11,13-15 点北京；实际触发可能有几分钟延迟，属正常）
+    - cron: '*/15 1-3,5-7 * * 1-5'
+  workflow_dispatch: {}   # 允许在 GitHub 页面手动触发测试
+
+permissions:
+  contents: write         # 允许把 state.json 提交回仓库（跨运行去重）
+
+concurrency:
+  group: signal-monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 运行监控
+        env:
+          SCT_SENDKEY: ${{ secrets.SCT_SENDKEY }}
+        run: node monitor/cloud-monitor.mjs
+
+      - name: 提交状态文件
+        run: |
+          git config user.name "signal-monitor-bot"
+          git config user.email "signal-monitor-bot@users.noreply.github.com"
+          git add monitor/state.json monitor/last-run.json
+          git diff --cached --quiet || (git commit -m "chore: update monitor state [skip ci]" && git push)

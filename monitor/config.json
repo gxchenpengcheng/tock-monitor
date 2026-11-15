@@ -1,0 +1,7 @@
+{
+  "symbol": "588170",
+  "strategy": "ma",
+  "params": { "short": 5, "long": 20 },
+  "periods": ["day", "m30"],
+  "fq": 1
+}
