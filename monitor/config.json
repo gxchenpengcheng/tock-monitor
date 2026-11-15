@@ -5,7 +5,7 @@
     { "key": "bbi", "params": { "n": 3, "mult": 2, "mode": 0 } },
     { "key": "macd", "params": { "fast": 5, "slow": 10, "signal": 9 } }
   ],
-  "comboMode": "majority",
+  "comboMode": "and",
   "periods": ["day", "m30"],
   "fq": 1
 }
