@@ -1,0 +1,22 @@
+{
+ "ok": true,
+ "time": "2026-11-15 20:28:19 北京时间",
+ "symbol": "sh588170",
+ "name": "科创半导体ETF华夏",
+ "strategy": "双均线交叉 (SMA)",
+ "positions": {
+  "day": {
+   "position": "hold",
+   "lastDate": "2026-11-13",
+   "close": 0.706
+  },
+  "m30": {
+   "position": "empty",
+   "lastDate": "2026-11-13 15:00",
+   "close": 0.706
+  }
+ },
+ "alertCount": 0,
+ "pushed": false,
+ "baseline": true
+}
