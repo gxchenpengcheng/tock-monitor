@@ -123,6 +123,12 @@ function comboTitle(list, mode) {
   const m = { and: '全部同意', majority: '多数同意', or: '任一同意' }[mode] || mode;
   return '策略组合(' + list.length + ') · ' + m;
 }
+/* 当前合成口径的要求，写进消息里避免误读 */
+function modeTxt(n, mode) {
+  if (mode === 'and') return '（需全部 ' + n + ' 票看多）';
+  if (mode === 'or') return '（≥1 票看多即持仓）';
+  return '（需过半，≥' + (Math.floor(n / 2) + 1) + ' 票）';
+}
 
 /* ---------- 单周期信号检测（组合时按 combineSignals 合成） ---------- */
 function detectPeriod(BT, list, mode, bars, period) {
@@ -226,7 +232,7 @@ async function main() {
         '- 策略：' + title + '\n' +
         '- 信号：' + pTag + ' ' + det.flip.date + ' **' + sideTxt + '**\n' +
         '- 信号K线收盘：' + det.flip.close + '\n' +
-        (isCombo ? '- 当时票数：' + det.flip.longCount + '/' + list.length + ' 看多\n' + voteTxt + '\n' : '') +
+        (isCombo ? '- 当时票数：' + det.flip.longCount + '/' + list.length + ' 看多' + modeTxt(list.length, mode) + '\n' + voteTxt + '\n' : '') +
         '- 当前持仓口径：' + (det.position === 'hold' ? '持有' : '空仓') + '\n\n' +
         '> 按回测口径信号次日开盘成交，仅供参考，不构成投资建议'
     });
