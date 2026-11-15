@@ -1,7 +1,11 @@
 {
   "symbol": "588170",
-  "strategy": "ma",
-  "params": { "short": 5, "long": 20 },
+  "combo": [
+    { "key": "pxma", "params": { "period": 5, "confirm": 1 } },
+    { "key": "bbi", "params": { "n": 3, "mult": 2, "mode": 0 } },
+    { "key": "macd", "params": { "fast": 5, "slow": 10, "signal": 9 } }
+  ],
+  "comboMode": "majority",
   "periods": ["day", "m30"],
   "fq": 1
 }
