@@ -4,7 +4,40 @@
 
 ## 信号逻辑
 
-与本地版 `stock-backtest/monitor` 完全一致：拉取标的日线+30分钟K线（腾讯财经），用 `index.html` 里的策略引擎在**已收盘**的K线上判断 MA5/20 翻转点，新信号通过 Server酱 推送到微信。状态文件 `monitor/state.json` 每次运行后提交回仓库实现跨运行去重。
+拉取标的日线+30分钟K线（腾讯财经），用 `index.html` 里的策略引擎在**已收盘**的K线上判断仓位翻转点，新信号通过 Server酱 推送到微信。状态文件 `monitor/state.json` 每次运行后提交回仓库实现跨运行去重。
+
+支持**策略组合**，合成方式与网页「策略组合」完全一致（调用同一个 `BT.combineSignals`）。当前配置：3 个策略 + 多数同意（过半看多）。
+
+## 配置监控标的 / 策略
+
+改 `monitor/config.json`。
+
+**组合模式**（多策略投票）：
+
+```json
+{
+  "symbol": "588170",
+  "combo": [
+    { "key": "pxma", "params": { "period": 5, "confirm": 1 } },
+    { "key": "bbi",  "params": { "n": 3, "mult": 2, "mode": 0 } },
+    { "key": "macd", "params": { "fast": 5, "slow": 10, "signal": 9 } }
+  ],
+  "comboMode": "majority",
+  "periods": ["day", "m30"],
+  "fq": 1
+}
+```
+
+- `comboMode`：`and` 全部同意 / `majority` 多数同意（3个策略时需≥2票）/ `or` 任一同意
+- 策略 key 与参数名要和网页里一致：`ma{short,long}`、`pxma{period,confirm}`、`bbi{n,mult,mode}`、`macd{fast,slow,signal}`、`rsi{period,low,high}`、`boll{period,mult}` 等
+
+**单策略模式**（把 `combo` 换成下面两行即可）：
+
+```json
+"strategy": "ma", "params": { "short": 5, "long": 20 }
+```
+
+> 改完策略后一定要把 `monitor/state.json` 重置为 `{"baseline": false}`，否则上一套策略记的去重键会导致漏报或误报。下次运行会重新记基线，之后新信号才推送。
 
 ## 首次部署步骤（约10分钟）
 
@@ -45,10 +78,6 @@
 - 不勾选（默认）：正常巡检。日志出现 `[done] {"ok":true,...}` 即成功；**第一次运行只记基线不报警**（日志里 `"baseline":true,"pushed":false`），属正常。
 
 > 注意：新仓库如果以前没用过 Actions，先去 Actions 页点绿色按钮启用。
-
-## 改监控标的 / 策略
-
-改 `monitor/config.json`（字段含义见 `stock-backtest/monitor/README.md`），提交后在 Actions 里手动跑一次，让它重建基线。换策略记得核对 `state.json`（删掉该文件让脚本重记基线也行）。
 
 ## 日常注意
 
