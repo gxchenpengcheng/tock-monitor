@@ -1,19 +1,65 @@
 {
  "ok": true,
- "time": "2026-11-15 20:28:19 北京时间",
+ "time": "2026-11-16 10:21:52 北京时间",
  "symbol": "sh588170",
  "name": "科创半导体ETF华夏",
- "strategy": "双均线交叉 (SMA)",
+ "strategy": "策略组合(3) · 全部同意",
+ "combo": [
+  "价格穿越均线(5,1)",
+  "BBI 多空指数(3,2)",
+  "MACD 金叉死叉(5,10)"
+ ],
+ "comboMode": "and",
  "positions": {
   "day": {
-   "position": "hold",
-   "lastDate": "2026-11-13",
-   "close": 0.706
+   "position": "empty",
+   "lastDate": "2026-11-16",
+   "close": 0.68
   },
   "m30": {
    "position": "empty",
-   "lastDate": "2026-11-13 15:00",
-   "close": 0.706
+   "lastDate": "2026-11-16 10:00",
+   "close": 0.673
+  }
+ },
+ "details": {
+  "day": {
+   "position": "empty",
+   "lastDate": "2026-11-16",
+   "close": 0.68,
+   "votes": [
+    {
+     "label": "价格穿越均线(5,1)",
+     "long": false
+    },
+    {
+     "label": "BBI 多空指数(3,2)",
+     "long": false
+    },
+    {
+     "label": "MACD 金叉死叉(5,10)",
+     "long": true
+    }
+   ]
+  },
+  "m30": {
+   "position": "empty",
+   "lastDate": "2026-11-16 10:00",
+   "close": 0.673,
+   "votes": [
+    {
+     "label": "价格穿越均线(5,1)",
+     "long": false
+    },
+    {
+     "label": "BBI 多空指数(3,2)",
+     "long": false
+    },
+    {
+     "label": "MACD 金叉死叉(5,10)",
+     "long": false
+    }
+   ]
   }
  },
  "alertCount": 0,
