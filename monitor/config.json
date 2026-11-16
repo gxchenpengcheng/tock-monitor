@@ -3,7 +3,7 @@
   "combo": [
     { "key": "pxma", "params": { "period": 5, "confirm": 1 } },
     { "key": "bbi", "params": { "n": 3, "mult": 2, "mode": 0 } },
-    { "key": "macd", "params": { "fast": 5, "slow": 10, "signal": 9 } }
+    { "key": "macd", "params": { "fast": 5, "slow": 10, "signal": 5 } }
   ],
   "comboMode": "and",
   "periods": ["day", "m30"],
