@@ -43,11 +43,13 @@ LONG:=P1 AND P2 AND P3;
 BUY:=LONG AND REF(LONG,1)=0;
 SELL:=LONG=0 AND REF(LONG,1)=1;
 
-DRAWTEXT(BUY,LOW*0.99,'B'),COLORMAGENTA;
-DRAWTEXT(SELL,HIGH*1.01,'S'),COLORYELLOW;
+DRAWTEXT(BUY,LOW*0.99,'B');
+DRAWTEXT(SELL,HIGH*1.01,'S');
 ```
 
-保存后「测试公式」应通过；图上会在买点 K 线下方写紫色 B、卖点上方写黄色 S。
+保存后「测试公式」应通过；图上会在买点 K 线下方写 B、卖点上方写 S（默认颜色）。
+
+> 想给文字上色：在同花顺「通达信模式」或通达信里可写成 `DRAWTEXT(BUY,LOW*0.99,'B'),COLORMAGENTA;`。同花顺「同花顺模式」不接受这个颜色后缀（该行报错），东财也可能同样挑剔——两个软件里若报错，去掉 `,COLORMAGENTA` 即可，见 2.3.1。
 
 ### 2.2 想要箭头图标（仅同花顺 / 通达信，东方财富不支持）
 
@@ -62,12 +64,21 @@ DRAWICON(SELL,HIGH*1.005,2);
 
 ### 2.3 函数支持对照
 
-| 函数 | 东方财富 PC | 同花顺 PC / 通达信 |
-| --- | --- | --- |
-| `MA` `EMA` `REF` `AND` | ✅ | ✅ |
-| `DRAWTEXT(COND,PRICE,'字')` | ✅ | ✅ |
-| `STICKLINE(COND,P1,P2,W,0)` | ✅ | ✅ |
-| `DRAWICON(COND,PRICE,TYPE)` | ❌ 报错 | ✅ TYPE 1=↑ 2=↓ |
+| 函数 | 东方财富 PC | 同花顺 PC（同花顺模式） | 同花顺 PC（通达信模式）/ 通达信 |
+| --- | --- | --- | --- |
+| `MA` `EMA` `REF` `AND` | ✅ | ✅ | ✅ |
+| `DRAWTEXT(COND,PRICE,'字')` | ✅ | ✅（**不能带颜色后缀**） | ✅ |
+| `STICKLINE(COND,P1,P2,W,0)` | ✅ | ✅ | ✅ |
+| `DRAWICON(COND,PRICE,TYPE)` | ❌ 报错 | ✅ | ✅ TYPE 1=↑ 2=↓ |
+
+### 2.3.1 同花顺编辑器三个模式的坑
+
+同花顺 PC 的公式编辑器顶部有三页：**同花顺模式 / 通达信模式 / 核新Script模式**，三者的函数签名不完全一样。
+
+- 「同花顺模式」下 `DRAWTEXT(BUY,LOW,'B'),COLORMAGENTA;` 会在**该行**报「缺少数字、变量、常量或函数名」——它不允许给 `DRAWTEXT` 加颜色后缀。去掉 `,COLORMAGENTA` 即可，代价是文字变默认色；也可以用 `DRAWICON` 代替（同花顺模式支持）。
+- 「通达信模式」是兼容层，2.1 / 2.2 的原样写法（含 `DRAWICON`、含颜色后缀）全部通过。想要彩色箭头，就把整段贴进这一页。
+- **切换模式可能清空编辑区**，切之前先把代码复制出去。
+- 不确定某函数在当前模式怎么用时：左侧「请输入公式与函数」搜索框搜函数名 → 双击 → 右侧显示该模式的参数说明与示例。
 
 - `MA5` 就是「价格穿越均线(5,1)」的 5 日线；`BBIV` 是 BBI(3,2) = MA3/6/12/24 的等权平均
 - `LONG` 即 AND 合成：三票同时看多才持仓
