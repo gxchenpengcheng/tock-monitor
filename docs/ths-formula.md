@@ -67,18 +67,55 @@ DRAWICON(SELL,HIGH*1.005,2);
 | 函数 | 东方财富 PC | 同花顺 PC（同花顺模式） | 同花顺 PC（通达信模式）/ 通达信 |
 | --- | --- | --- | --- |
 | `MA` `EMA` `REF` `AND` | ✅ | ✅ | ✅ |
-| `DRAWTEXT(COND,PRICE,'字')` | ✅ | ✅（**不能带颜色后缀**） | ✅ |
+| `DRAWTEXT(COND,PRICE,'字')` | ✅ | ⚠️ 实测报错（见 2.3.2），改用 `DRAWICON` | ✅ |
 | `STICKLINE(COND,P1,P2,W,0)` | ✅ | ✅ | ✅ |
-| `DRAWICON(COND,PRICE,TYPE)` | ❌ 报错 | ✅ | ✅ TYPE 1=↑ 2=↓ |
+| `DRAWICON(COND,PRICE,TYPE)` | ❌ 报错 | ✅ 推荐 | ✅ TYPE 1=↑ 2=↓ |
+| 变量名 `BUY` / `SELL` | ✅ | ⚠️ 可能与「交易系统」保留字冲突，建议改 `BK`/`SK` | ✅ |
 
 ### 2.3.1 同花顺编辑器三个模式的坑
 
 同花顺 PC 的公式编辑器顶部有三页：**同花顺模式 / 通达信模式 / 核新Script模式**，三者的函数签名不完全一样。
 
-- 「同花顺模式」下 `DRAWTEXT(BUY,LOW,'B'),COLORMAGENTA;` 会在**该行**报「缺少数字、变量、常量或函数名」——它不允许给 `DRAWTEXT` 加颜色后缀。去掉 `,COLORMAGENTA` 即可，代价是文字变默认色；也可以用 `DRAWICON` 代替（同花顺模式支持）。
-- 「通达信模式」是兼容层，2.1 / 2.2 的原样写法（含 `DRAWICON`、含颜色后缀）全部通过。想要彩色箭头，就把整段贴进这一页。
+- 「同花顺模式」下 `DRAWTEXT(BUY,LOW,'B'),COLORMAGENTA;` 会在**该行**报「缺少数字、变量、常量或函数名」；去掉颜色后缀**仍然报错**（实测），所以这一页干脆别用 `DRAWTEXT`，改用 `DRAWICON`——见 2.3.2 的最小风险版。
+- 「通达信模式」是兼容层，2.1 / 2.2 的原样写法（含 `DRAWTEXT` 颜色后缀、`DRAWICON`）全部通过。想用文字标注就贴进这一页。
 - **切换模式可能清空编辑区**，切之前先把代码复制出去。
 - 不确定某函数在当前模式怎么用时：左侧「请输入公式与函数」搜索框搜函数名 → 双击 → 右侧显示该模式的参数说明与示例。
+
+### 2.3.2 同花顺模式「最小风险版」（实测排错顺序）
+
+在「同花顺模式」里实测依次踩到两种报错，都是「缺少数字、变量、常量或函数名」：
+
+| 序号 | 写法 | 结果 |
+| --- | --- | --- |
+| 1 | `DRAWTEXT(BUY,LOW*0.99,'B'),colormagenta;` | ❌ 报该行 |
+| 2 | `DRAWTEXT(BUY,LOW*0.99,'B');`（去掉颜色） | ❌ 仍报该行 |
+| 3 | 下面这段：`DRAWICON` + 无字符串 + 变量改名 `BK`/`SK` | ✅ 建议直接用 |
+
+第 3 版把所有可疑点一次性去掉：不用 `DRAWTEXT`（改用 `DRAWICON`，不需要字符串常量）、变量名避开 `BUY`/`SELL`（同花顺「交易系统」公式里这两个是保留关键字）、位置直接用 `LOW`/`HIGH`（不乘系数）。
+
+```
+MA5:MA(CLOSE,5),coloryellow;
+BBIV:(MA(CLOSE,3)+MA(CLOSE,6)+MA(CLOSE,12)+MA(CLOSE,24))/4,colormagenta;
+
+DIF:=EMA(CLOSE,5)-EMA(CLOSE,10);
+DEA:=EMA(DIF,5);
+
+P1:=CLOSE>MA5;
+P2:=CLOSE>BBIV;
+P3:=DIF>DEA;
+LONG:=P1 AND P2 AND P3;
+
+BK:=LONG AND REF(LONG,1)=0;
+SK:=LONG=0 AND REF(LONG,1)=1;
+
+DRAWICON(BK,LOW,1);
+DRAWICON(SK,HIGH,2);
+```
+
+跑通后可逐步加回装饰（一次只改一处、改完就点「测试公式」）：`LOW` → `LOW*0.99` 挪到 K 线下方；再加 `DRAWTEXT(BK,LOW*0.99,'B');` 写字。
+
+> 顺序说明：`DRAWICON` 与 `STICKLINE` 都不需要字符串常量，是三种软件里最稳的画标记方式；`DRAWTEXT` 是兼容性最差的（同花顺模式对它的参数校验最严）。
+
 
 - `MA5` 就是「价格穿越均线(5,1)」的 5 日线；`BBIV` 是 BBI(3,2) = MA3/6/12/24 的等权平均
 - `LONG` 即 AND 合成：三票同时看多才持仓
