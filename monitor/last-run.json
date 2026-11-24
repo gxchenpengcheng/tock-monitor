@@ -1,6 +1,6 @@
 {
  "ok": true,
- "time": "2026-11-24 13:57:18 北京时间",
+ "time": "2026-11-24 15:14:09 北京时间",
  "symbol": "sh588170",
  "name": "科创半导体ETF华夏",
  "strategy": "策略组合(3) · 全部同意",
@@ -12,40 +12,21 @@
  "comboMode": "and",
  "positions": {
   "day": {
-   "position": "hold",
+   "position": "empty",
    "lastDate": "2026-11-24",
-   "close": 0.7
+   "close": 0.69
   },
   "m30": {
    "position": "empty",
-   "lastDate": "2026-11-24 13:30",
-   "close": 0.699
+   "lastDate": "2026-11-24 14:30",
+   "close": 0.691
   }
  },
  "details": {
   "day": {
-   "position": "hold",
-   "lastDate": "2026-11-24",
-   "close": 0.7,
-   "votes": [
-    {
-     "label": "价格穿越均线(5,1)",
-     "long": true
-    },
-    {
-     "label": "BBI 多空指数(3,2)",
-     "long": true
-    },
-    {
-     "label": "MACD 金叉死叉(5,10)",
-     "long": true
-    }
-   ]
-  },
-  "m30": {
    "position": "empty",
-   "lastDate": "2026-11-24 13:30",
-   "close": 0.699,
+   "lastDate": "2026-11-24",
+   "close": 0.69,
    "votes": [
     {
      "label": "价格穿越均线(5,1)",
@@ -54,6 +35,25 @@
     {
      "label": "BBI 多空指数(3,2)",
      "long": true
+    },
+    {
+     "label": "MACD 金叉死叉(5,10)",
+     "long": false
+    }
+   ]
+  },
+  "m30": {
+   "position": "empty",
+   "lastDate": "2026-11-24 14:30",
+   "close": 0.691,
+   "votes": [
+    {
+     "label": "价格穿越均线(5,1)",
+     "long": false
+    },
+    {
+     "label": "BBI 多空指数(3,2)",
+     "long": false
     },
     {
      "label": "MACD 金叉死叉(5,10)",
