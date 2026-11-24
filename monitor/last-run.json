@@ -1,6 +1,6 @@
 {
  "ok": true,
- "time": "2026-11-24 10:14:25 北京时间",
+ "time": "2026-11-24 11:13:18 北京时间",
  "symbol": "sh588170",
  "name": "科创半导体ETF华夏",
  "strategy": "策略组合(3) · 全部同意",
@@ -14,19 +14,19 @@
   "day": {
    "position": "hold",
    "lastDate": "2026-11-24",
-   "close": 0.72
+   "close": 0.7
   },
   "m30": {
    "position": "hold",
-   "lastDate": "2026-11-24 10:00",
-   "close": 0.715
+   "lastDate": "2026-11-24 11:00",
+   "close": 0.71
   }
  },
  "details": {
   "day": {
    "position": "hold",
    "lastDate": "2026-11-24",
-   "close": 0.72,
+   "close": 0.7,
    "votes": [
     {
      "label": "价格穿越均线(5,1)",
@@ -44,8 +44,8 @@
   },
   "m30": {
    "position": "hold",
-   "lastDate": "2026-11-24 10:00",
-   "close": 0.715,
+   "lastDate": "2026-11-24 11:00",
+   "close": 0.71,
    "votes": [
     {
      "label": "价格穿越均线(5,1)",
@@ -62,7 +62,7 @@
    ]
   }
  },
- "alertCount": 1,
- "pushed": true,
+ "alertCount": 0,
+ "pushed": false,
  "baseline": false
 }
